@@ -13,7 +13,7 @@ import type {
   TimeStage
 } from "@/game/types";
 
-type MessageKind = "player" | "scene" | "system";
+type MessageKind = "player" | "scene" | "system" | "debug";
 
 interface MessageLine {
   id: string;
@@ -225,6 +225,7 @@ export default function HomePage() {
   const [turns, setTurns] = useState<GameTurnResult[]>([]);
   const [messages, setMessages] = useState<MessageLine[]>(INITIAL_MESSAGES);
   const [selectedNpcId, setSelectedNpcId] = useState<NPCId | null>(null);
+  const [debugOpen, setDebugOpen] = useState(false);
   const currentLocation = runtime.world.locations[runtime.world.currentLocation];
   const currentLocationLabel = LOCATION_LABELS[runtime.world.currentLocation];
   const latestTurn = turns.at(-1);
@@ -283,7 +284,7 @@ export default function HomePage() {
     const actionInput = {
       talk: `我与${name}交谈。`,
       probe: `我试探${name}的态度。`,
-      meeting: `我请求与${name}会面。`,
+      meeting: `我请求与${name}详谈。`,
       info: `我向${name}交付所知信息。`
     }[action];
 
@@ -331,7 +332,7 @@ export default function HomePage() {
                 type="button"
               >
                 <span>{LOCATION_LABELS[node.id].name}</span>
-                <small>{isCurrent ? "所在" : isConnected ? "出口" : "远处"}</small>
+                <small>{isCurrent ? "当前" : isConnected ? "出口" : "远处"}</small>
               </button>
             );
           })}
@@ -356,8 +357,8 @@ export default function HomePage() {
 
             {latestTurn?.directorOutput.shouldAdvanceTime ? (
               <p className="time-proposal">
-                局势似乎正在推进：可能进入{" "}
-                {displayTimeStage(latestTurn.directorOutput.nextTimeStageProposal)}。
+                局势正在推进，可能进入：
+                {displayTimeStage(latestTurn.directorOutput.nextTimeStageProposal)}
               </p>
             ) : null}
 
@@ -412,6 +413,11 @@ export default function HomePage() {
                   {message.text}
                 </p>
               ))}
+              {debugOpen && latestTurn ? (
+                <p className="message-line debug">
+                  Debug：{latestTurn.debugSummary}
+                </p>
+              ) : null}
             </div>
           </section>
         </div>
@@ -478,7 +484,10 @@ export default function HomePage() {
           </section>
 
           <section className="debug-panel" aria-label="紧凑调试摘要">
-            <details>
+            <details
+              onToggle={(event) => setDebugOpen(event.currentTarget.open)}
+              open={debugOpen}
+            >
               <summary>Debug 摘要</summary>
               <DebugMiniView turn={latestTurn} />
               <p className="debug-summary">

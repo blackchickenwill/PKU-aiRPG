@@ -117,7 +117,7 @@ button:disabled {
 .location-graph {
   position: relative;
   flex: 1;
-  min-height: 560px;
+  min-height: 420px;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -153,6 +153,11 @@ button:disabled {
   background: var(--paper);
   transform: translate(-50%, -50%);
   text-align: center;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
 }
 
 .graph-node span,
@@ -309,6 +314,10 @@ button:disabled {
   min-height: 36px;
   padding: 6px 10px;
   color: var(--ink);
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .exit-button:hover,
@@ -323,6 +332,15 @@ button:disabled {
   min-width: 148px;
   padding: 10px;
   text-align: left;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.npc-card:hover {
+  border-color: var(--teal);
+  background: var(--teal-soft);
 }
 
 .npc-card span {
@@ -374,6 +392,13 @@ button:disabled {
 .message-line.system {
   border-left-color: var(--cinnabar);
   background: #fff1ee;
+}
+
+.message-line.debug {
+  border-left-color: var(--gold);
+  color: var(--muted);
+  background: #fff9ea;
+  font-size: 0.9rem;
 }
 
 .npc-detail {
@@ -512,7 +537,7 @@ details summary {
   }
 
   .location-graph {
-    min-height: 420px;
+    min-height: 360px;
   }
 }
 

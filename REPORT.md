@@ -949,3 +949,24 @@ NPC Proposal Validator 说明：
 - 未实现 ending composer。
 - 未绕过 `runPlayerTurn`。
 - 未直接修改 `WorldState`。
+
+### 2026-04-24 Task 11.6 Scene Interaction Polish
+
+本次改动：
+- 继续收敛 `src/app/page.tsx` 的浏览器界面，使其更接近 MUD / 放置江湖式的“场景 -> 出口 -> 人物 -> 行动日志 -> 输入”交互语法。
+- 将地点图谱整理为稳定的本地场景图：当前地点保持居中并标注“当前”，相连地点作为“出口”环绕显示，远处已知地点弱化为背景上下文。
+- 人物交互面板继续只展示公开姓名、身份、公开目标和可见动作；人物动作会生成自然语言输入，例如“我请求与郑伯详谈。”，再交给 `runPlayerTurn`。
+- 消息流继续区分玩家输入、场景/系统反馈，并在 Debug 面板展开时额外显示一条 debug-only 摘要行。
+- 时间显示只展示当前 `timeStage` 与 WorldDirector 的时间推进 proposal；提示文案为“局势正在推进，可能进入：{nextTimeStageProposal}”。
+
+设计说明：
+- 移动和 NPC action buttons 仍然全部通过 `runPlayerTurn`，不直接修改 `currentLocation` 或其他 `WorldState`。
+- UI 只展示时间推进 proposal，不由 UI 直接 mutation `timeStage`。
+- Debug 面板保持折叠和紧凑，不展示完整 NPC 私有记忆，也不展示隐藏推理链。
+
+未包含内容：
+- 未接入任何 LLM / API key / OpenRouter / OpenAI。
+- 未新增数据库或持久化。
+- 未实现 3D。
+- 未实现 checkpoint。
+- 未实现 ending composer。
