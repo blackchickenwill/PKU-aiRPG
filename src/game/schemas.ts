@@ -32,6 +32,9 @@ const actionIntentValues = [
   "defend",
   "give_item_or_info",
   "wait",
+  "refuse_mission",
+  "delay_commitment",
+  "conditional_acceptance",
   "impossible_action",
   "out_of_world_instruction"
 ] as const;
@@ -43,6 +46,11 @@ const strategyValues = [
   "probe_intention",
   "offer_benefit",
   "explain_loyalty",
+  "grievance_expression",
+  "self_deprecation",
+  "loyalty_conflict",
+  "demand_recognition",
+  "reluctant_acceptance",
   "incoherent",
   "none"
 ] as const;
