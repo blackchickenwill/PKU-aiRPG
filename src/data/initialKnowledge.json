@@ -10,18 +10,27 @@
   },
   "zhu_is_zheng_elder": {
     "id": "zhu_is_zheng_elder",
-    "content": "烛之武是郑国老臣，熟悉外交与天下形势。",
+    "content": "烛之武是郑国老臣，久有才具，熟悉外交与天下形势，却长期未被真正重用。",
     "source": "角色设定",
     "credibility": "high",
     "knownByPlayer": true,
     "knownByNPCs": ["zheng_duke", "yi_zhihu"],
     "tags": ["player_identity", "opening"]
   },
+  "opening_briefing_player_context": {
+    "id": "opening_briefing_player_context",
+    "content": "你是郑国老臣烛之武，久有才具，却未被早用。如今秦晋围郑，国势将倾，佚之狐特来相告并荐你入见郑伯。你知道秦晋同围而利害并不一致：秦远晋近，郑亡则晋得其利；郑若存，则郑或可为秦国东方往来之助。",
+    "source": "开局 briefing",
+    "credibility": "high",
+    "knownByPlayer": true,
+    "knownByNPCs": ["yi_zhihu", "zheng_duke"],
+    "tags": ["opening", "player_identity", "briefing", "strategy"]
+  },
   "qin_far_jin_near": {
     "id": "qin_far_jin_near",
     "content": "秦远晋近，若郑灭，主要得利者常被视为晋。",
     "source": "政治常识",
-    "credibility": "medium",
+    "credibility": "high",
     "knownByPlayer": true,
     "knownByNPCs": ["zheng_duke", "yi_zhihu", "qin_duke", "jin_envoy"],
     "tags": ["strategy", "interest_analysis"]
@@ -32,7 +41,16 @@
     "source": "政治常识",
     "credibility": "medium",
     "knownByPlayer": true,
-    "knownByNPCs": ["zheng_duke", "yi_zhihu", "qin_duke"],
+    "knownByNPCs": ["zheng_duke", "yi_zhihu"],
     "tags": ["strategy", "exchange_interest"]
+  },
+  "qin_vague_eastern_interest": {
+    "id": "qin_vague_eastern_interest",
+    "content": "秦方对东方通道与落脚利益并非全无兴趣，但尚未把郑的存续明确组织成决定性论证。",
+    "source": "秦方模糊判断",
+    "credibility": "low",
+    "knownByPlayer": false,
+    "knownByNPCs": ["qin_duke"],
+    "tags": ["strategy", "qin_view", "partial"]
   }
 }

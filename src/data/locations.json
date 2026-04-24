@@ -4,16 +4,16 @@
     "name": "烛之武宅",
     "description": "城内旧宅，夜色沉沉，是烛之武起身谋划之处。",
     "connectedTo": ["zheng_palace", "market"],
-    "presentNPCs": [],
+    "presentNPCs": ["yi_zhihu"],
     "tags": ["home", "city"],
-    "stateTags": ["quiet", "pre_departure"]
+    "stateTags": ["quiet", "pre_departure", "opening_inform"]
   },
   "zheng_palace": {
     "id": "zheng_palace",
     "name": "郑伯宫室",
     "description": "郑伯与近臣议事之所，气氛急迫，等待破局之策。",
     "connectedTo": ["zhu_home", "market", "city_gate"],
-    "presentNPCs": ["zheng_duke", "yi_zhihu"],
+    "presentNPCs": ["zheng_duke"],
     "tags": ["palace", "court"],
     "stateTags": ["urgent", "briefing"]
   },

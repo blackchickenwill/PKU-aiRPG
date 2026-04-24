@@ -1,24 +1,24 @@
 {
   "zheng_duke": {
     "npcId": "zheng_duke",
-    "episodicMemory": ["秦晋围郑，郑国局势危急。"],
-    "beliefs": ["必须尽快找到说动秦伯的办法。"],
-    "doubts": ["不知道秦方是否还有回旋余地。"],
+    "episodicMemory": ["秦晋围郑，郑国局势危急。", "直到国势危殆，才真正想到应召用烛之武。"],
+    "beliefs": ["必须尽快找到说动秦伯的办法。", "烛之武的才具本可早用，如今只能在危局中倚重他。"],
+    "doubts": ["不知道秦方是否还有回旋余地。", "担心烛之武因久未被用而心存怨气，不愿尽力。"],
     "attitudes": {
-      "player": "把烛之武视为可托付之人",
+      "player": "既倚重烛之武，又对自己迟用其才怀有愧意",
       "qin": "戒惧但仍想争取转圜",
       "jin": "怨惧其近逼之势"
     },
     "promisesMade": [],
     "promisesReceived": [],
-    "lastPlayerInteraction": "尚未正式会见",
+    "lastPlayerInteraction": "尚未正式会见，但已在危急中想到召用",
     "privateFlags": {
       "awaitingCounsel": true
     }
   },
   "yi_zhihu": {
     "npcId": "yi_zhihu",
-    "episodicMemory": ["已判断郑国需以言辞破局。"],
+    "episodicMemory": ["已判断郑国需以言辞破局。", "正前往烛之武宅中告急并劝其出面。"],
     "beliefs": ["烛之武是当前最合适的说客。"],
     "doubts": ["不确定郑伯是否会立刻采纳。"],
     "attitudes": {
@@ -27,9 +27,10 @@
     },
     "promisesMade": [],
     "promisesReceived": [],
-    "lastPlayerInteraction": "准备举荐",
+    "lastPlayerInteraction": "正在上门相告与劝请",
     "privateFlags": {
-      "recommendedPlayer": false
+      "recommendedPlayer": true,
+      "atPlayersHome": true
     }
   },
   "qin_duke": {
