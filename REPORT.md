@@ -970,3 +970,31 @@ NPC Proposal Validator 说明：
 - 未实现 3D。
 - 未实现 checkpoint。
 - 未实现 ending composer。
+
+### 2026-04-24 Task 11.7 Time Advancement Commit
+
+本次改动：
+- 更新 `src/game/reducer.ts`，为 `time_advanced` 事件增加 reducer 提交逻辑。
+- 新增 `createTimeAdvancementValidatorResult(runtime, nextTimeStage)`，将 WorldDirector 的时间推进 proposal 包装为已验证的 `ValidatorResult`。
+- 更新 `src/game/gameLoop.ts`，在 `runPlayerTurn` 中于 WorldDirector 返回 `shouldAdvanceTime` / `nextTimeStageProposal` 后，生成并提交 `time_advanced` 事件。
+- 更新 `src/app/page.tsx`，清理 `TIME_LABELS` 中的 mojibake key，使用正确时段：`夜初`、`夜半`、`黎明前`、`清晨`。
+
+设计说明：
+- WorldDirector 仍然只提出时间推进 proposal，不直接修改 `WorldState`。
+- `timeStage` 只会通过已提交的 `time_advanced` 事件和 reducer 路径改变。
+- UI 只读取 `runtime.world.timeStage`，不直接修改时间；若还有未来 proposal，才显示 proposal 提示。
+- `time_advanced` 事件会写入 eventLog，payload 记录 `from`、`to` 与 `source: "world_director_proposal"`。
+
+本次新增验证：
+- director time proposal 会在 game loop 中提交为 `time_advanced` 事件。
+- reducer 会把 `time_advanced` 事件提交到 eventLog 并更新 `world.timeStage`。
+- WorldDirector 不直接 mutate runtime。
+- unsafe input 不会推进时间。
+- UI 只通过 `runPlayerTurn` 返回的 `nextRuntime` 更新 runtime，不直接写 `timeStage`。
+
+未包含内容：
+- 未接入任何 LLM / API key / OpenRouter / OpenAI。
+- 未新增数据库或持久化。
+- 未实现 3D。
+- 未实现 checkpoint。
+- 未实现 ending composer。

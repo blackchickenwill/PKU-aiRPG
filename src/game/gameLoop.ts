@@ -1,6 +1,9 @@
 import { filterEventForAllNpcs } from "./observationFilter";
 import { parsePlayerActionMock } from "./parserMock";
-import { reduceValidatedResult } from "./reducer";
+import {
+  createTimeAdvancementValidatorResult,
+  reduceValidatedResult
+} from "./reducer";
 import { applyMemoryPatchProposal } from "./npcMemory";
 import type { MemoryPatchApplicationResult } from "./npcMemory";
 import { runNpcKernelMock } from "./npcKernel";
@@ -205,7 +208,7 @@ export function runPlayerTurn(
   const actionProposal = withSceneDefaultTarget(runtime, parsedActionProposal);
   const validatorResult = validateActionProposal(runtime, actionProposal);
   let workingRuntime = reduceValidatedResult(runtime, validatorResult);
-  const committedEvents =
+  let committedEvents =
     validatorResult.status === "rejected" ? [] : validatorResult.generatedEvents;
   const observableEvents = collectObservableEvents(workingRuntime, committedEvents);
   const npcKernelOutputs: NPCKernelOutput[] = [];
@@ -275,6 +278,21 @@ export function runPlayerTurn(
     observableEvents,
     validatedProposalEvents
   });
+  const timeAdvancementResult = createTimeAdvancementValidatorResult(
+    workingRuntime,
+    directorOutput.shouldAdvanceTime
+      ? directorOutput.nextTimeStageProposal
+      : undefined
+  );
+
+  if (timeAdvancementResult) {
+    workingRuntime = reduceValidatedResult(workingRuntime, timeAdvancementResult);
+    committedEvents = [
+      ...committedEvents,
+      ...timeAdvancementResult.generatedEvents
+    ];
+  }
+
   const mockNarrativeLines = buildNarrativeLines({
     validatorResult,
     committedEvents,

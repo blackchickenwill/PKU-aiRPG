@@ -1,4 +1,16 @@
-import type { GameEvent, GameRuntimeState, ValidatorResult, WorldState } from "./types";
+import type {
+  GameEvent,
+  GameRuntimeState,
+  TimeStage,
+  ValidatorResult,
+  WorldState
+} from "./types";
+
+const TIME_STAGES: TimeStage[] = ["夜初", "夜半", "黎明前", "清晨"];
+
+function isTimeStage(value: unknown): value is TimeStage {
+  return typeof value === "string" && TIME_STAGES.includes(value as TimeStage);
+}
 
 function applyEventToWorld(world: WorldState, event: GameEvent): WorldState {
   const nextWorld: WorldState = {
@@ -39,7 +51,51 @@ function applyEventToWorld(world: WorldState, event: GameEvent): WorldState {
     nextWorld.flags.qinTentDiplomacyOccurred = true;
   }
 
+  if (event.type === "time_advanced") {
+    const to = event.payload.to;
+
+    if (isTimeStage(to)) {
+      nextWorld.timeStage = to;
+    }
+  }
+
   return nextWorld;
+}
+
+export function createTimeAdvancementValidatorResult(
+  runtime: GameRuntimeState,
+  nextTimeStage: TimeStage | undefined
+): ValidatorResult | undefined {
+  if (!nextTimeStage || nextTimeStage === runtime.world.timeStage) {
+    return undefined;
+  }
+
+  const currentIndex = TIME_STAGES.indexOf(runtime.world.timeStage);
+  const nextIndex = TIME_STAGES.indexOf(nextTimeStage);
+
+  if (currentIndex < 0 || nextIndex !== currentIndex + 1) {
+    return undefined;
+  }
+
+  const event: GameEvent = {
+    id: `time-advanced-${runtime.world.eventLog.length + 1}`,
+    type: "time_advanced",
+    actor: "world_director",
+    summary: `时势推移，局势进入${nextTimeStage}。`,
+    payload: {
+      from: runtime.world.timeStage,
+      to: nextTimeStage,
+      source: "world_director_proposal"
+    },
+    important: true
+  };
+
+  return {
+    status: "accepted",
+    reason: "WorldDirector time advancement proposal validated.",
+    generatedEvents: [event],
+    debugHints: ["time advancement validated from world director proposal"]
+  };
 }
 
 export function reduceValidatedResult(

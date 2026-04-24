@@ -3,7 +3,10 @@ import assert from "node:assert/strict";
 
 import { initialGameRuntimeState } from "./initialWorld";
 import { parsePlayerActionMock } from "./parserMock";
-import { reduceValidatedResult } from "./reducer";
+import {
+  createTimeAdvancementValidatorResult,
+  reduceValidatedResult
+} from "./reducer";
 import { validateActionProposal } from "./validator";
 import type { GameRuntimeState } from "./types";
 
@@ -86,4 +89,25 @@ test("reducer does not mutate world on rejected validation result", () => {
   const nextRuntime = reduceValidatedResult(runtime, result);
 
   assert.deepEqual(nextRuntime, before);
+});
+
+test("reducer commits validated time advancement event", () => {
+  const runtime = cloneRuntime(initialGameRuntimeState);
+  const result = createTimeAdvancementValidatorResult(runtime, "夜半");
+
+  assert.ok(result);
+
+  const nextRuntime = reduceValidatedResult(runtime, result);
+  const timeEvent = nextRuntime.world.eventLog.at(-1);
+
+  assert.equal(nextRuntime.world.timeStage, "夜半");
+  assert.equal(runtime.world.timeStage, "夜初");
+  assert.equal(timeEvent?.type, "time_advanced");
+  assert.equal(timeEvent?.actor, "world_director");
+  assert.equal(timeEvent?.summary, "时势推移，局势进入夜半。");
+  assert.deepEqual(timeEvent?.payload, {
+    from: "夜初",
+    to: "夜半",
+    source: "world_director_proposal"
+  });
 });

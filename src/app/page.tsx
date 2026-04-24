@@ -96,10 +96,10 @@ const NPC_PUBLIC_INFO: Record<NPCId, { identity: string; goal: string }> = {
 };
 
 const TIME_LABELS: Record<string, string> = {
-  "澶滃垵": "夜初",
-  "澶滃崐": "夜半",
-  "榛庢槑鍓?": "黎明前",
-  "娓呮櫒": "清晨"
+  "夜初": "夜初",
+  "夜半": "夜半",
+  "黎明前": "黎明前",
+  "清晨": "清晨"
 };
 
 const INITIAL_MESSAGES: MessageLine[] = [
@@ -144,6 +144,8 @@ function readableEventType(event: GameEvent): string {
       return "拒绝";
     case "npc_intention":
       return "意图";
+    case "time_advanced":
+      return "时势";
     default:
       return event.type;
   }
@@ -232,6 +234,11 @@ export default function HomePage() {
   const connectedLocations = currentLocation.connectedTo;
   const selectedNpc = selectedNpcId ? runtime.world.npcs[selectedNpcId] : null;
   const eventLog = runtime.world.eventLog.slice(-6);
+  const pendingTimeStageProposal =
+    latestTurn?.directorOutput.shouldAdvanceTime === true &&
+    latestTurn.directorOutput.nextTimeStageProposal !== runtime.world.timeStage
+      ? latestTurn.directorOutput.nextTimeStageProposal
+      : undefined;
   const graphNodes = useMemo(
     () =>
       buildGraphNodes(
@@ -355,10 +362,10 @@ export default function HomePage() {
 
             <p className="scene-description">{currentLocationLabel.description}</p>
 
-            {latestTurn?.directorOutput.shouldAdvanceTime ? (
+            {pendingTimeStageProposal ? (
               <p className="time-proposal">
                 局势正在推进，可能进入：
-                {displayTimeStage(latestTurn.directorOutput.nextTimeStageProposal)}
+                {displayTimeStage(pendingTimeStageProposal)}
               </p>
             ) : null}
 
