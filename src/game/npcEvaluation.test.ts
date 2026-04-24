@@ -39,6 +39,83 @@ function makeContext(
   };
 }
 
+test("goal priority recognizes readable Chinese strategic interest keywords", () => {
+  const qinNearJinFarContext = makeContext("qin_duke", {
+    observableEvent: {
+      id: "obs-readable-qin-far-jin-near",
+      originalEventId: "event-readable-qin-far-jin-near",
+      observerNpcId: "qin_duke",
+      visibility: "full",
+      summaryForNpc: "烛之武说明秦远晋近，亡郑未必利秦。",
+      knownDetails: ["秦远晋近，亡郑主要利晋。"],
+      hiddenDetails: [],
+      credibility: "high"
+    }
+  });
+  const jinBenefitContext = makeContext("qin_duke", {
+    observableEvent: {
+      id: "obs-readable-benefit-jin",
+      originalEventId: "event-readable-benefit-jin",
+      observerNpcId: "qin_duke",
+      visibility: "full",
+      summaryForNpc: "烛之武指出灭郑反而利晋。",
+      knownDetails: ["若亡郑，则其地近晋而利晋。"],
+      hiddenDetails: [],
+      credibility: "high"
+    }
+  });
+
+  assert.equal(evaluateGoalPriority(qinNearJinFarContext), "high");
+  assert.equal(evaluateGoalPriority(jinBenefitContext), "high");
+});
+
+test("goal priority recognizes readable Chinese state-crisis keywords", () => {
+  const stateCrisisContext = makeContext("yi_zhihu", {
+    observableEvent: {
+      id: "obs-readable-state-crisis",
+      originalEventId: "event-readable-state-crisis",
+      observerNpcId: "yi_zhihu",
+      visibility: "full",
+      summaryForNpc: "佚之狐听见国危之言。",
+      knownDetails: ["秦晋围郑，国危在即。"],
+      hiddenDetails: [],
+      credibility: "high"
+    }
+  });
+
+  assert.equal(evaluateGoalPriority(stateCrisisContext), "high");
+});
+
+test("goal priority recognizes readable Chinese request and delay cues as medium", () => {
+  const audienceRequestContext = makeContext("guard", {
+    observableEvent: {
+      id: "obs-readable-request-report",
+      originalEventId: "event-readable-request-report",
+      observerNpcId: "guard",
+      visibility: "full",
+      summaryForNpc: "郑国使者请求通报。",
+      knownDetails: ["请为我通报秦伯，愿求一见。"],
+      hiddenDetails: [],
+      credibility: "high"
+    }
+  });
+  const suspiciousDelayContext = makeContext("jin_envoy", {
+    observableEvent: {
+      id: "obs-readable-suspicious-delay",
+      originalEventId: "event-readable-suspicious-delay",
+      observerNpcId: "jin_envoy",
+      visibility: "partial",
+      summaryForNpc: "郑国使者进入秦伯主帐后停留时间偏长。",
+      knownDetails: ["停留时间偏长"],
+      hiddenDetails: ["主帐内具体谈话内容"],
+      credibility: "medium"
+    }
+  });
+
+  assert.equal(evaluateGoalPriority(audienceRequestContext), "medium");
+  assert.equal(evaluateGoalPriority(suspiciousDelayContext), "medium");
+});
+
 test("yi zhihu grievance context produces high escalation need", () => {
   const context = makeContext("yi_zhihu", {
     observableEvent: {

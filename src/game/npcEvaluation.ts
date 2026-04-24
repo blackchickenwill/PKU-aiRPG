@@ -70,7 +70,7 @@ export function evaluateGoalPriority(context: EvaluationContext): PressureLevel 
     hints.includes("state_survival") ||
     hints.includes("strategic_importance") ||
     hints.includes("zheng_crisis") ||
-    hasAny(text, ["鍥藉嵄", "鍥撮儜", "鍒╂檵", "绉﹁繙鏅嬭繎"])
+    hasAny(text, ["国危", "围郑", "利晋", "秦远晋近"])
   ) {
     return "high";
   }
@@ -79,7 +79,7 @@ export function evaluateGoalPriority(context: EvaluationContext): PressureLevel 
     hints.includes("alliance_pressure") ||
     hints.includes("suspicion_rising") ||
     hints.includes("gatekeeping") ||
-    hasAny(text, ["鍋滅暀鏃堕棿鍋忛暱", "璇锋眰閫氭姤", "璇蜂负鎴戦€氭姤"])
+    hasAny(text, ["停留时间偏长", "请求通报", "请为我通报"])
   ) {
     return "medium";
   }
