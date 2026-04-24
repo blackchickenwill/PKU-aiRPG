@@ -1,0 +1,18 @@
+Read PROJECT_BRIEF.md, AGENTS.md, MVP_SPEC.md, NPC_KERNEL_ARCHITECTURE.md, and TASKS.md first.
+
+Implement the ObservationFilter and NPCMemory foundations.
+
+Requirements:
+1. Create src/game/observationFilter.ts.
+2. Create src/game/npcMemory.ts.
+3. Implement filterEventForNpc(event, npcId, world).
+4. Implement tests proving:
+   - Qin Duke can hear full Qin tent dialogue directed at him.
+   - Jin envoy cannot know the exact words inside Qin tent.
+   - Zheng Duke cannot know Qin tent outcome unless a report event occurs.
+   - Guard only knows partial camp-order information.
+5. NPCMemory updates must require an ObservableEvent source.
+
+Do not use LLM.
+Do not let WorldDirector think for NPCs.
+Summarize changed files and test results.

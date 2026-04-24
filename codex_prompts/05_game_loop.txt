@@ -1,0 +1,24 @@
+Read PROJECT_BRIEF.md, AGENTS.md, MVP_SPEC.md, NPC_KERNEL_ARCHITECTURE.md, and TASKS.md first.
+
+Connect the mock game loop:
+
+input
+→ parserMock
+→ safety
+→ validator
+→ reducer
+→ observationFilter
+→ mock npc kernels
+→ validate npc proposals
+→ reducer
+→ narrator mock
+
+Acceptance:
+- Player can enter at least 6 actions.
+- Event log updates.
+- NPCMemory summaries update independently.
+- Debug panel shows ActionProposal, ObservableEvents, NPCMemory, and NPCIntentionProposals.
+- Formal mode remains clean.
+
+Do not integrate real LLM yet.
+Summarize changed files and test results.

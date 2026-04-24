@@ -1,0 +1,31 @@
+Read PROJECT_BRIEF.md, AGENTS.md, MVP_SPEC.md, NPC_KERNEL_ARCHITECTURE.md, and TASKS.md first.
+
+Implement Task 02 only.
+
+Create TypeScript types and Zod schemas for:
+- WorldState
+- NPCState
+- NPCMemory
+- NPCMemoryStore
+- KnowledgeItem
+- LocationState
+- PlayerAction
+- ActionProposal
+- SafetyClassification
+- GameEvent
+- ObservableEvent
+- MemoryPatchProposal
+- NPCIntentionProposal
+- NPCKernelInput
+- NPCKernelOutput
+- ValidatorResult
+- Checkpoint
+- EndingState
+
+Critical:
+- NPCMemory must be separate from NPCState.
+- LLM outputs must not directly mutate WorldState.
+- WorldState and NPCMemory must update only through validated events/reducers.
+
+Add basic tests.
+Summarize changed files and test results.

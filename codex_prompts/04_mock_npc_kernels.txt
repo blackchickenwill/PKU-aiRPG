@@ -1,0 +1,23 @@
+Read PROJECT_BRIEF.md, AGENTS.md, MVP_SPEC.md, NPC_KERNEL_ARCHITECTURE.md, and TASKS.md first.
+
+Implement mock NPC kernels.
+
+Create:
+- src/game/npcKernel.ts
+- src/game/kernels/qinDukeMock.ts
+- src/game/kernels/jinEnvoyMock.ts
+- src/game/kernels/zhengDukeMock.ts
+- src/game/kernels/guardMock.ts
+
+Rules:
+- Each kernel receives only NPCKernelInput for one NPC.
+- Each kernel outputs proposals only.
+- No kernel may mutate WorldState directly.
+- No kernel may know facts hidden by ObservationFilter.
+
+Test:
+- Qin Duke updates doubt after hearing “亡郑利晋”.
+- Jin envoy becomes suspicious from long meeting but does not know exact content.
+- Zheng Duke remains ignorant until report.
+
+Summarize changed files and test results.

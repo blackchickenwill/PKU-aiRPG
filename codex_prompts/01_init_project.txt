@@ -1,0 +1,19 @@
+Read PROJECT_BRIEF.md, AGENTS.md, MVP_SPEC.md, NPC_KERNEL_ARCHITECTURE.md, and TASKS.md first.
+
+Implement Task 01 only.
+
+Initialize the project skeleton for the 《烛之武退秦师》 language-action RPG research demo.
+
+Requirements:
+1. Next.js + TypeScript + Tailwind.
+2. Three-panel layout:
+   - left: node map
+   - right: scene/dialogue panel
+   - bottom: player input box
+3. Add optional debug panel placeholder.
+4. Do not implement LLM calls.
+5. Do not implement NPC kernels yet.
+6. Do not invent lore.
+7. Do not make this a generic chatbot.
+
+After completion, summarize changed files and how to run the app.
