@@ -902,3 +902,50 @@ NPC Proposal Validator 说明：
 - 未实现 checkpoint。
 - 未实现 ending composer。
 - 未新增故事分支或 UI hardcoded branch。
+### 2026-04-24 Task 11.6 MUD-style Scene Interaction UI
+
+本次改动：
+- 更新 `src/app/page.tsx`，将最小可玩 UI 调整为更接近放置江湖 / MUD 的场景交互界面。
+- 更新 `src/app/globals.css`，重做地点图谱、场景面板、人物互动、消息流、事件摘要和折叠 debug 的层级与间距。
+
+界面行为：
+- 左侧地点列表改为 node-link 风格地点图谱。
+- 当前地点位于图谱中心并高亮。
+- 相连地点通过线条连接，可点击前往。
+- 未连接已知地点以弱化节点显示。
+- 点击相连地点仍会生成自然语言移动输入，例如“我前往郑伯宫室。”，并通过 `runPlayerTurn` 推进。
+- 当前场景面板显示：
+  - 当前地点名称
+  - 地点描述
+  - 当前 `timeStage`
+  - 在场 NPC
+  - 相连出口
+- 在场 NPC 以可点击人物卡显示。
+- 点击人物会打开轻量人物详情面板，展示公开身份、公开目标与可用动作按钮：
+  - 交谈
+  - 试探
+  - 请求会面
+  - 交付信息
+- 人物动作按钮会生成自然语言输入，例如“我与佚之狐交谈。”、“我试探守卫的态度。”，再交给 `runPlayerTurn`。
+- 底部叙事反馈改为滚动消息流，包含玩家输入与系统 / 场景 / NPC 反馈。
+- event log 保留为次要折叠摘要。
+- compact debug mini-view 保留为折叠面板，不展示完整 NPC 私有记忆，也不展示隐藏推理链。
+
+设计说明：
+- 这是 UI/UX binding 改进，不新增游戏系统。
+- 移动和 NPC action buttons 仍然全部通过 `runPlayerTurn`，不直接修改 `WorldState`。
+- UI 只显示当前 `timeStage` 和 WorldDirector 的时间推进 proposal；即使出现“可能进入下一时段”的提示，也不由 UI 直接 mutation `timeStage`。
+- 未新增故事分支或硬编码剧情结果。
+
+验证结果：
+- `npm run test` 通过：114 个测试全部通过。
+- `npm run build` 通过。
+- build 过程中 Next.js 仍提示 workspace root lockfile warning；该 warning 与本次 Task 11.6 改动无关。
+
+未包含内容：
+- 未接入任何 LLM / API key / OpenRouter / OpenAI。
+- 未新增数据库或持久化。
+- 未实现 checkpoint。
+- 未实现 ending composer。
+- 未绕过 `runPlayerTurn`。
+- 未直接修改 `WorldState`。
