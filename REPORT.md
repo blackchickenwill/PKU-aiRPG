@@ -770,3 +770,38 @@ NPC Proposal Validator 说明：
 - 未实现 UI。
 - 未实现 Task 10。
 - 未改变现有架构；本次是 8.3 修复确认与 Task 09 推送前确认。
+
+### 2026-04-24 Task 10 WorldDirector Scheduler
+
+本次改动：
+
+- 新增 `src/game/worldDirector.ts`。
+- 新增 `src/game/worldDirector.test.ts`。
+- 实现 `runWorldDirector(input)`，用于从 `ObservableEvent` 列出需要唤醒的 NPC kernels，并对已验证的 NPC proposal events 做确定性排序。
+- 实现 scheduled follow-up event proposals，用于承接已验证的 report / request_meeting / warn 等事件提案。
+- 实现时间推进提案：重要 report chain、report travel、delay 与秦帐关键外交链只提出 `nextTimeStageProposal`，不直接修改 `timeStage`。
+
+设计说明：
+
+- WorldDirector Scheduler 只做调度、排序与后续事件 proposal。
+- 它不替代 NPC kernels，不替 NPC 思考，不创造新的 NPC 主观意图。
+- 它不直接提交 `WorldState` 或 `NPCMemory`。
+- 它不会直接决定事实，例如“秦伯已撤军”。
+- 所有 scheduled events 都保留 proposal 语义，并带有 `proposedOnly` / `scheduledByWorldDirector` 标记，仍需后续 reducer / validator 流程处理。
+
+本次新增验证：
+
+- WorldDirector schedules yi_zhihu report/request_meeting to zheng_duke without updating Zheng Duke memory.
+- WorldDirector schedules guard report to qin_duke without directly giving Qin Duke knowledge.
+- Qin Duke question to player is ordered before Jin Envoy warning if both exist.
+- Jin Envoy warning/request_meeting is delayed behind immediate Qin Duke response.
+- DirectorOutput contains proposals only and does not mutate runtime.
+- shouldAdvanceTime is true for report travel / important report chains.
+- WorldDirector does not create new NPC thoughts.
+
+未包含内容：
+
+- 未接入任何 LLM / API key / 模型提供方。
+- 未实现 UI。
+- 未实现 Task 11 full mock game loop。
+- 未让 WorldDirector 直接修改 `WorldState` 或 `NPCMemory`。
