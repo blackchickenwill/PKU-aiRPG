@@ -150,6 +150,72 @@ test("guard kernel turns audience request into a report proposal", () => {
   assert.equal(output.memoryPatch?.privateFlagUpdates?.pendingAudienceRequest, true);
 });
 
+test("yi zhihu kernel uses generic refusal pattern for opening regression", () => {
+  const runtime = cloneRuntime(initialGameRuntimeState);
+  const event = makeValidatedEvent(runtime, "我老矣，无能为也已。");
+  const input = buildKernelInput(runtime, "yi_zhihu", event);
+
+  const output = runNpcKernelMock(input);
+
+  assert.equal(output.npcId, "yi_zhihu");
+  assert.ok(output.memoryPatch);
+  assert.ok(output.intention);
+  assert.equal(output.memoryPatch?.npcId, "yi_zhihu");
+  assert.equal(output.intention?.npcId, "yi_zhihu");
+  assert.equal(output.intention?.target, "player");
+  assert.ok(
+    output.memoryPatch?.addEpisodicMemory?.some((detail) => detail.includes("年老") || detail.includes("无能"))
+  );
+  assert.ok(output.dialogue?.includes("国势危急"));
+});
+
+test("yi zhihu kernel recognizes grievance without directly mutating zheng duke memory", () => {
+  const runtime = cloneRuntime(initialGameRuntimeState);
+  const beforeZhengDukeMemory = structuredClone(runtime.npcMemories.zheng_duke);
+  const event = makeValidatedEvent(runtime, "郑伯早不用我，如今国危才想起我？");
+  const input = buildKernelInput(runtime, "yi_zhihu", event);
+
+  const output = runNpcKernelMock(input);
+
+  assert.equal(output.npcId, "yi_zhihu");
+  assert.ok(output.memoryPatch);
+  assert.ok(output.intention);
+  assert.equal(output.memoryPatch?.privateFlagUpdates?.zhuGrievanceRecognized, true);
+  assert.equal(output.intention?.target, "zheng_duke");
+  assert.ok(output.dialogue?.includes("郑伯"));
+  assert.deepEqual(runtime.npcMemories.zheng_duke, beforeZhengDukeMemory);
+});
+
+test("yi zhihu kernel treats conditional acceptance as actionable", () => {
+  const runtime = cloneRuntime(initialGameRuntimeState);
+  const event = makeValidatedEvent(runtime, "若郑伯亲自见我，说明其意，我再考虑。");
+  const input = buildKernelInput(runtime, "yi_zhihu", event);
+
+  const output = runNpcKernelMock(input);
+
+  assert.equal(output.npcId, "yi_zhihu");
+  assert.ok(output.memoryPatch?.addBeliefs?.some((detail) => detail.includes("并非断然拒绝")));
+  assert.ok(output.intention);
+  assert.equal(output.intention?.target, "zheng_duke");
+  assert.ok(output.dialogue?.includes("并非绝辞") || output.dialogue?.includes("可落到实处"));
+});
+
+test("yi zhihu kernel records loyalty conflict as persuadable duty tension", () => {
+  const runtime = cloneRuntime(initialGameRuntimeState);
+  const event = makeValidatedEvent(runtime, "我虽怨其不用，然郑国不可亡。");
+  const input = buildKernelInput(runtime, "yi_zhihu", event);
+
+  const output = runNpcKernelMock(input);
+
+  assert.equal(output.npcId, "yi_zhihu");
+  assert.ok(output.memoryPatch);
+  assert.ok(
+    output.memoryPatch?.addBeliefs?.includes("烛之武仍可被国家大义说动。")
+  );
+  assert.ok(output.intention);
+  assert.ok(["player", "zheng_duke"].includes(String(output.intention?.target)));
+});
+
 test("dispatcher returns no-op output when input observer does not match npc state", () => {
   const runtime = setLocation(cloneRuntime(initialGameRuntimeState), "qin_main_tent");
   const event = makeValidatedEvent(

@@ -2,6 +2,7 @@ import { npcKernelInputSchema, npcKernelOutputSchema } from "./schemas";
 import { runGuardKernelMock } from "./kernels/guardMock";
 import { runJinEnvoyKernelMock } from "./kernels/jinEnvoyMock";
 import { runQinDukeKernelMock } from "./kernels/qinDukeMock";
+import { runYiZhihuKernelMock } from "./kernels/yiZhihuMock";
 import { runZhengDukeKernelMock } from "./kernels/zhengDukeMock";
 import type { NPCKernelInput, NPCKernelOutput } from "./types";
 
@@ -39,10 +40,7 @@ export function runNpcKernelMock(input: NPCKernelInput): NPCKernelOutput {
     case "guard":
       return runGuardKernelMock(parsedInput);
     case "yi_zhihu":
-      return createNoOpOutput(
-        parsedInput,
-        "Yi Zhi Hu mock kernel is not implemented yet; no proposal emitted."
-      );
+      return runYiZhihuKernelMock(parsedInput);
     case "commoner_rep":
       return createNoOpOutput(
         parsedInput,
