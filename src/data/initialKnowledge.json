@@ -1,0 +1,38 @@
+{
+  "qin_jin_besiege_zheng": {
+    "id": "qin_jin_besiege_zheng",
+    "content": "秦晋正在合围郑国，局势危急。",
+    "source": "开局背景",
+    "credibility": "high",
+    "knownByPlayer": true,
+    "knownByNPCs": ["zheng_duke", "yi_zhihu", "qin_duke", "jin_envoy", "guard", "commoner_rep"],
+    "tags": ["opening", "war"]
+  },
+  "zhu_is_zheng_elder": {
+    "id": "zhu_is_zheng_elder",
+    "content": "烛之武是郑国老臣，熟悉外交与天下形势。",
+    "source": "角色设定",
+    "credibility": "high",
+    "knownByPlayer": true,
+    "knownByNPCs": ["zheng_duke", "yi_zhihu"],
+    "tags": ["player_identity", "opening"]
+  },
+  "qin_far_jin_near": {
+    "id": "qin_far_jin_near",
+    "content": "秦远晋近，若郑灭，主要得利者常被视为晋。",
+    "source": "政治常识",
+    "credibility": "medium",
+    "knownByPlayer": true,
+    "knownByNPCs": ["zheng_duke", "yi_zhihu", "qin_duke", "jin_envoy"],
+    "tags": ["strategy", "interest_analysis"]
+  },
+  "zheng_as_eastern_host": {
+    "id": "zheng_as_eastern_host",
+    "content": "若郑存续，或可为秦国东方往来之助。",
+    "source": "政治常识",
+    "credibility": "medium",
+    "knownByPlayer": true,
+    "knownByNPCs": ["zheng_duke", "yi_zhihu", "qin_duke"],
+    "tags": ["strategy", "exchange_interest"]
+  }
+}

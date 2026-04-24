@@ -1,0 +1,80 @@
+{
+  "zheng_duke": {
+    "id": "zheng_duke",
+    "name": "郑伯",
+    "faction": "zheng",
+    "location": "zheng_palace",
+    "identity": "郑国国君",
+    "currentGoal": "尽快找到能说动秦伯的办法",
+    "longTermGoal": "保全郑国",
+    "personality": ["焦虑", "现实", "重结果"],
+    "publicAttitudeToPlayer": "临危信任",
+    "possibleActions": ["会见", "授意", "等待汇报"],
+    "isKeyNPC": true
+  },
+  "yi_zhihu": {
+    "id": "yi_zhihu",
+    "name": "佚之狐",
+    "faction": "zheng",
+    "location": "zheng_palace",
+    "identity": "郑国大夫",
+    "currentGoal": "促成烛之武出使",
+    "longTermGoal": "协助郑国脱困",
+    "personality": ["机敏", "善判断"],
+    "publicAttitudeToPlayer": "积极支持",
+    "possibleActions": ["进言", "引荐", "说明局势"],
+    "isKeyNPC": true
+  },
+  "qin_duke": {
+    "id": "qin_duke",
+    "name": "秦伯",
+    "faction": "qin",
+    "location": "qin_main_tent",
+    "identity": "秦国国君",
+    "currentGoal": "判断灭郑是否真正有利于秦",
+    "longTermGoal": "扩大并维护秦国利益",
+    "personality": ["务实", "谨慎", "不轻信"],
+    "publicAttitudeToPlayer": "尚未定性",
+    "possibleActions": ["召见", "询问", "下令"],
+    "isKeyNPC": true
+  },
+  "jin_envoy": {
+    "id": "jin_envoy",
+    "name": "晋使",
+    "faction": "jin",
+    "location": "jin_camp_direction",
+    "identity": "晋国代表",
+    "currentGoal": "防止秦国私下与郑国议和",
+    "longTermGoal": "确保晋国在围郑中的战略收益",
+    "personality": ["警觉", "强硬", "重联盟表象"],
+    "publicAttitudeToPlayer": "警惕戒备",
+    "possibleActions": ["观察", "质问", "上报"],
+    "isKeyNPC": true
+  },
+  "guard": {
+    "id": "guard",
+    "name": "守卫",
+    "faction": "qin",
+    "location": "qin_camp_exterior",
+    "identity": "秦营守卫与通报执行者",
+    "currentGoal": "维持营门秩序",
+    "longTermGoal": "执行秦伯与营中命令",
+    "personality": ["服从", "谨守职责"],
+    "publicAttitudeToPlayer": "审视来意",
+    "possibleActions": ["通报", "阻拦", "传令"],
+    "isKeyNPC": false
+  },
+  "commoner_rep": {
+    "id": "commoner_rep",
+    "name": "郑国百姓代表",
+    "faction": "commoners",
+    "location": "market",
+    "identity": "城中民意与恐慌的承载者",
+    "currentGoal": "求生保家",
+    "longTermGoal": "盼望郑国免于覆亡",
+    "personality": ["忧惧", "敏感", "易受风声影响"],
+    "publicAttitudeToPlayer": "寄望于使者与朝廷",
+    "possibleActions": ["议论", "传播传闻", "反映气氛"],
+    "isKeyNPC": false
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "zheng_duke": {
+    "npcId": "zheng_duke",
+    "episodicMemory": ["秦晋围郑，郑国局势危急。"],
+    "beliefs": ["必须尽快找到说动秦伯的办法。"],
+    "doubts": ["不知道秦方是否还有回旋余地。"],
+    "attitudes": {
+      "player": "把烛之武视为可托付之人",
+      "qin": "戒惧但仍想争取转圜",
+      "jin": "怨惧其近逼之势"
+    },
+    "promisesMade": [],
+    "promisesReceived": [],
+    "lastPlayerInteraction": "尚未正式会见",
+    "privateFlags": {
+      "awaitingCounsel": true
+    }
+  },
+  "yi_zhihu": {
+    "npcId": "yi_zhihu",
+    "episodicMemory": ["已判断郑国需以言辞破局。"],
+    "beliefs": ["烛之武是当前最合适的说客。"],
+    "doubts": ["不确定郑伯是否会立刻采纳。"],
+    "attitudes": {
+      "player": "相信其口才与判断",
+      "zheng": "愿尽力辅佐郑国"
+    },
+    "promisesMade": [],
+    "promisesReceived": [],
+    "lastPlayerInteraction": "准备举荐",
+    "privateFlags": {
+      "recommendedPlayer": false
+    }
+  },
+  "qin_duke": {
+    "npcId": "qin_duke",
+    "episodicMemory": ["秦军已至郑境，与晋军同围郑。"],
+    "beliefs": ["当前围郑之举应服务于秦国利益。"],
+    "doubts": ["晋国是否会借机独占好处。"],
+    "attitudes": {
+      "player": "尚无定见",
+      "jin": "合作但不尽信",
+      "zheng": "敌对但可评估价值"
+    },
+    "promisesMade": [],
+    "promisesReceived": [],
+    "lastPlayerInteraction": "尚未接触",
+    "privateFlags": {
+      "openToAudience": false
+    }
+  },
+  "jin_envoy": {
+    "npcId": "jin_envoy",
+    "episodicMemory": ["晋国正在推进对郑的军事与外交压力。"],
+    "beliefs": ["必须防止秦国单独受益。"],
+    "doubts": ["秦方是否会被郑国说动。"],
+    "attitudes": {
+      "player": "将其视作可能的游说者",
+      "qin": "合作中带着警惕",
+      "zheng": "不可信任"
+    },
+    "promisesMade": [],
+    "promisesReceived": [],
+    "lastPlayerInteraction": "尚未接触",
+    "privateFlags": {
+      "suspicionRaised": false
+    }
+  },
+  "guard": {
+    "npcId": "guard",
+    "episodicMemory": ["营门夜间戒备中。"],
+    "beliefs": ["营外来者都需要先经通报。"],
+    "doubts": [],
+    "attitudes": {
+      "player": "未识别其真实影响力"
+    },
+    "promisesMade": [],
+    "promisesReceived": [],
+    "lastPlayerInteraction": "尚未接触",
+    "privateFlags": {
+      "onGateDuty": true
+    }
+  },
+  "commoner_rep": {
+    "npcId": "commoner_rep",
+    "episodicMemory": ["城中人人都在谈论围城与求生。"],
+    "beliefs": ["朝廷必须尽快找到出路。"],
+    "doubts": ["不知道外部谈判是否还有希望。"],
+    "attitudes": {
+      "player": "把希望寄托在朝中能人身上",
+      "zheng": "仍盼其能守国"
+    },
+    "promisesMade": [],
+    "promisesReceived": [],
+    "lastPlayerInteraction": "尚未接触",
+    "privateFlags": {
+      "spreadingRumors": false
+    }
+  }
+}

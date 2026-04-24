@@ -1,0 +1,65 @@
+{
+  "zhu_home": {
+    "id": "zhu_home",
+    "name": "烛之武宅",
+    "description": "城内旧宅，夜色沉沉，是烛之武起身谋划之处。",
+    "connectedTo": ["zheng_palace", "market"],
+    "presentNPCs": [],
+    "tags": ["home", "city"],
+    "stateTags": ["quiet", "pre_departure"]
+  },
+  "zheng_palace": {
+    "id": "zheng_palace",
+    "name": "郑伯宫室",
+    "description": "郑伯与近臣议事之所，气氛急迫，等待破局之策。",
+    "connectedTo": ["zhu_home", "market", "city_gate"],
+    "presentNPCs": ["zheng_duke", "yi_zhihu"],
+    "tags": ["palace", "court"],
+    "stateTags": ["urgent", "briefing"]
+  },
+  "market": {
+    "id": "market",
+    "name": "郑国市井",
+    "description": "城中百姓聚散其间，流言、忧惧与求生心态交织。",
+    "connectedTo": ["zhu_home", "zheng_palace", "city_gate"],
+    "presentNPCs": ["commoner_rep"],
+    "tags": ["city", "rumor"],
+    "stateTags": ["uneasy"]
+  },
+  "city_gate": {
+    "id": "city_gate",
+    "name": "城墙 / 城门",
+    "description": "出入郑城的关键通道，通往敌营与使行之路。",
+    "connectedTo": ["zheng_palace", "market", "qin_camp_exterior"],
+    "presentNPCs": [],
+    "tags": ["gate", "border"],
+    "stateTags": ["guarded"]
+  },
+  "qin_camp_exterior": {
+    "id": "qin_camp_exterior",
+    "name": "秦营外",
+    "description": "秦军营门外，往来受控，任何请求都必须先经通报。",
+    "connectedTo": ["city_gate", "qin_main_tent", "jin_camp_direction"],
+    "presentNPCs": ["guard"],
+    "tags": ["camp", "frontline"],
+    "stateTags": ["restricted"]
+  },
+  "qin_main_tent": {
+    "id": "qin_main_tent",
+    "name": "秦伯主帐",
+    "description": "秦伯处理军政与会客的主帐，重要谈判在此发生。",
+    "connectedTo": ["qin_camp_exterior"],
+    "presentNPCs": ["qin_duke"],
+    "tags": ["tent", "command"],
+    "stateTags": ["private", "high_stakes"]
+  },
+  "jin_camp_direction": {
+    "id": "jin_camp_direction",
+    "name": "晋军营方向",
+    "description": "通向晋军驻地的方向，象征晋方压力与旁观视线。",
+    "connectedTo": ["qin_camp_exterior"],
+    "presentNPCs": ["jin_envoy"],
+    "tags": ["jin", "alliance_tension"],
+    "stateTags": ["watchful"]
+  }
+}
