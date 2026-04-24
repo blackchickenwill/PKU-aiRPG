@@ -152,7 +152,7 @@ test("filterEventForAllNpcs returns only non-null observations", () => {
   assert.ok(observations.every((observation) => observation !== null));
 });
 
-test("qin camp exterior request is fully visible to guard and partially visible to qin duke", () => {
+test("qin camp exterior request is fully visible only to guard", () => {
   const runtime = setLocation(
     cloneRuntime(initialGameRuntimeState),
     "qin_camp_exterior"
@@ -161,12 +161,13 @@ test("qin camp exterior request is fully visible to guard and partially visible 
 
   const guardObservation = filterEventForNpc(event, "guard", runtime);
   const qinDukeObservation = filterEventForNpc(event, "qin_duke", runtime);
+  const jinEnvoyObservation = filterEventForNpc(event, "jin_envoy", runtime);
   const zhengObservation = filterEventForNpc(event, "zheng_duke", runtime);
 
   assert.ok(guardObservation);
   assert.equal(guardObservation.visibility, "full");
-  assert.ok(qinDukeObservation);
-  assert.equal(qinDukeObservation.visibility, "partial");
+  assert.equal(qinDukeObservation, null);
+  assert.equal(jinEnvoyObservation, null);
   assert.equal(zhengObservation, null);
 });
 

@@ -190,21 +190,6 @@ function filterQinCampExteriorRequest(
     );
   }
 
-  if (npcId === "qin_duke") {
-    return makeObservable(
-      event,
-      npcId,
-      "partial",
-      "守卫向你递来消息：郑国使者在营外请求入见。",
-      ["郑国使者正在营外请求会见", "守卫需要决定是否通报"],
-      ["烛之武原话的完整措辞"]
-    );
-  }
-
-  if (npcId === "jin_envoy") {
-    return null;
-  }
-
   return null;
 }
 
