@@ -258,3 +258,65 @@ NPCMemory 不能因不可见事件更新。
 WorldDirector 不能直接改 WorldState。
 LLM 输出不能绕过 Validator。
 ```
+
+## 12. 例子是回归测试，不是分支
+
+项目里会不断出现一些高辨识度例子，例如：
+
+```text
+烛之武拒绝佚之狐
+烛之武抱怨郑伯迟用
+烛之武附条件接受
+烛之武以“秦远晋近”说动秦伯
+晋使因主帐久谈而起疑
+```
+
+这些例子的重要性在于：
+
+```text
+它们是 regression tests，
+用来检查系统的一般机制是否真的能处理合理的世界内自由输入。
+```
+
+它们不应该被实现为：
+
+```text
+if 玩家说了这句
+and 当前是这个 NPC
+and 当前是这个场景
+then 走专门分支
+```
+
+正确方向应该是：
+
+```text
+语义动作分类
+→ 世界规则校验
+→ 事件落盘
+→ 观察过滤
+→ NPC memory 更新
+→ affordance 选择
+→ goal / pressure 驱动的主观评估
+→ NPC intention proposal
+→ NPC proposal validator
+→ WorldDirector 调度
+→ reducer commit
+```
+
+也就是说：
+
+```text
+系统要通过通用机制泛化，而不是通过不断追加 one-off branch 来“支持自由度”。
+```
+
+例如“佚之狐开场遭遇拒绝”，应当被视为：
+
+```text
+一个检验 refusal / grievance / conditional acceptance / loyalty conflict
+等一般反应模式是否成立的回归场景，
+而不是要求代码里出现“佚之狐拒绝分支”。
+```
+
+同理，未来接入 LLM 时，LLM 的作用也不是替项目生成分支树，
+而是在单个 NPC 的私有上下文中进行主观推理，
+在 affordance 和 validator 约束下输出结构化 proposal。
