@@ -1,4 +1,6 @@
 import { npcKernelOutputSchema } from "../schemas";
+import { getAvailableAffordances } from "../npcAffordances";
+import { rankAffordancesByEvaluation } from "../npcEvaluation";
 import type { NPCKernelInput, NPCKernelOutput } from "../types";
 
 function sawSuspiciousDelay(input: NPCKernelInput): boolean {
@@ -13,6 +15,23 @@ function sawSuspiciousDelay(input: NPCKernelInput): boolean {
 
 export function runJinEnvoyKernelMock(input: NPCKernelInput): NPCKernelOutput {
   if (sawSuspiciousDelay(input)) {
+    const primaryAffordance = rankAffordancesByEvaluation(
+      {
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["alliance_pressure", "suspicion_rising"]
+      },
+      getAvailableAffordances({
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["alliance_pressure", "suspicion_rising"]
+      })
+    )[0];
+
     return npcKernelOutputSchema.parse({
       npcId: "jin_envoy",
       memoryPatch: {
@@ -31,9 +50,12 @@ export function runJinEnvoyKernelMock(input: NPCKernelInput): NPCKernelOutput {
       intention: {
         npcId: "jin_envoy",
         sourceObservableEventId: input.observableEvent.id,
-        intentionType: "request_meeting",
+        intentionType: primaryAffordance === "warn" ? "warn" : "request_meeting",
         target: "qin_duke",
-        summary: "请求会见秦伯，提醒秦晋同盟不可被郑国游说动摇。",
+        summary:
+          primaryAffordance === "warn"
+            ? "立即警示秦方，郑国使者可能正试图离间秦晋。"
+            : "请求会见秦伯，提醒秦晋同盟不可被郑国游说动摇。",
         requiresValidation: true
       },
       visibleReaction: "晋使在营中停步侧听，疑色渐深。",

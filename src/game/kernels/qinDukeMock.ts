@@ -1,4 +1,6 @@
 import { npcKernelOutputSchema } from "../schemas";
+import { getAvailableAffordances } from "../npcAffordances";
+import { rankAffordancesByEvaluation } from "../npcEvaluation";
 import type { NPCKernelInput, NPCKernelOutput } from "../types";
 
 function sawInterestArgument(input: NPCKernelInput): boolean {
@@ -16,6 +18,23 @@ function sawInterestArgument(input: NPCKernelInput): boolean {
 
 export function runQinDukeKernelMock(input: NPCKernelInput): NPCKernelOutput {
   if (sawInterestArgument(input)) {
+    const primaryAffordance = rankAffordancesByEvaluation(
+      {
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["strategic_importance", "alliance_fragile"]
+      },
+      getAvailableAffordances({
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["strategic_importance", "alliance_fragile"]
+      })
+    )[0];
+
     return npcKernelOutputSchema.parse({
       npcId: "qin_duke",
       memoryPatch: {
@@ -36,9 +55,12 @@ export function runQinDukeKernelMock(input: NPCKernelInput): NPCKernelOutput {
       intention: {
         npcId: "qin_duke",
         sourceObservableEventId: input.observableEvent.id,
-        intentionType: "question",
+        intentionType: primaryAffordance === "defer_decision" ? "delay" : "question",
         target: "player",
-        summary: "追问郑国若存，究竟能为秦国带来何种实际利益。",
+        summary:
+          primaryAffordance === "defer_decision"
+            ? "暂缓立断，继续权衡郑亡与存郑对秦的利害。"
+            : "追问郑国若存，究竟能为秦国带来何种实际利益。",
         requiresValidation: true
       },
       dialogue: "你说亡郑未必真利于秦，那么郑若得存，于秦又能有何所助？",

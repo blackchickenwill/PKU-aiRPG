@@ -1,4 +1,6 @@
 import { npcKernelOutputSchema } from "../schemas";
+import { getAvailableAffordances } from "../npcAffordances";
+import { rankAffordancesByEvaluation } from "../npcEvaluation";
 import type { NPCKernelInput, NPCKernelOutput } from "../types";
 
 function heardDirectCounsel(input: NPCKernelInput): boolean {
@@ -10,6 +12,23 @@ function heardDirectCounsel(input: NPCKernelInput): boolean {
 
 export function runZhengDukeKernelMock(input: NPCKernelInput): NPCKernelOutput {
   if (heardDirectCounsel(input)) {
+    const primaryAffordance = rankAffordancesByEvaluation(
+      {
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["state_survival", "awaiting_solution"]
+      },
+      getAvailableAffordances({
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["state_survival", "awaiting_solution"]
+      })
+    )[0];
+
     return npcKernelOutputSchema.parse({
       npcId: "zheng_duke",
       memoryPatch: {
@@ -29,7 +48,7 @@ export function runZhengDukeKernelMock(input: NPCKernelInput): NPCKernelOutput {
       intention: {
         npcId: "zheng_duke",
         sourceObservableEventId: input.observableEvent.id,
-        intentionType: "speak",
+        intentionType: primaryAffordance === "request_meeting" ? "request_meeting" : "speak",
         target: "player",
         summary: "回应烛之武，并请求其尽力为郑国谋一线生机。",
         requiresValidation: true

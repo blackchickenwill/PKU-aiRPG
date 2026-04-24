@@ -1,5 +1,6 @@
 import { npcKernelOutputSchema } from "../schemas";
 import { getAvailableAffordances } from "../npcAffordances";
+import { rankAffordancesByEvaluation } from "../npcEvaluation";
 import { detectReactionPatternFromObservation } from "../reactionPatterns";
 import type {
   NPCKernelInput,
@@ -33,7 +34,18 @@ export function runYiZhihuKernelMock(input: NPCKernelInput): NPCKernelOutput {
     reactionPattern: pattern,
     pressureHints: ["zheng_crisis", "time_urgent"]
   });
-  const primaryAffordance = affordances[0] ?? "do_nothing";
+  const primaryAffordance =
+    rankAffordancesByEvaluation(
+      {
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        reactionPattern: pattern,
+        pressureHints: ["zheng_crisis", "time_urgent"]
+      },
+      affordances
+    )[0] ?? "do_nothing";
 
   switch (pattern) {
     case "refusal":

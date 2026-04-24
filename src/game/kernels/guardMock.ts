@@ -1,4 +1,6 @@
 import { npcKernelOutputSchema } from "../schemas";
+import { getAvailableAffordances } from "../npcAffordances";
+import { rankAffordancesByEvaluation } from "../npcEvaluation";
 import type { NPCKernelInput, NPCKernelOutput } from "../types";
 
 function sawAudienceRequest(input: NPCKernelInput): boolean {
@@ -19,6 +21,23 @@ function sawTentOrderInfo(input: NPCKernelInput): boolean {
 
 export function runGuardKernelMock(input: NPCKernelInput): NPCKernelOutput {
   if (sawAudienceRequest(input)) {
+    const primaryAffordance = rankAffordancesByEvaluation(
+      {
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["gatekeeping", "authority_limited"]
+      },
+      getAvailableAffordances({
+        npcState: input.npcState,
+        npcMemory: input.npcMemory,
+        currentLocation: input.npcState.location,
+        observableEvent: input.observableEvent,
+        pressureHints: ["gatekeeping", "authority_limited"]
+      })
+    )[0];
+
     return npcKernelOutputSchema.parse({
       npcId: "guard",
       memoryPatch: {
@@ -33,9 +52,12 @@ export function runGuardKernelMock(input: NPCKernelInput): NPCKernelOutput {
       intention: {
         npcId: "guard",
         sourceObservableEventId: input.observableEvent.id,
-        intentionType: "report",
+        intentionType: primaryAffordance === "delay" ? "delay" : "report",
         target: "qin_duke",
-        summary: "向秦伯通报：郑国使者在营外请求入见。",
+        summary:
+          primaryAffordance === "delay"
+            ? "先拖住来使，再决定是否立即通报秦伯。"
+            : "向秦伯通报：郑国使者在营外请求入见。",
         requiresValidation: true
       },
       visibleReaction: "守卫神色未改，只是记下请求，准备依例通报。",
