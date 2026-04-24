@@ -245,7 +245,6 @@ export interface WorldState {
   npcs: Record<NPCId, NPCState>;
   knowledge: Record<string, KnowledgeItem>;
   eventLog: GameEvent[];
-  checkpoints: Checkpoint[];
   flags: Record<string, boolean | number | string>;
   ending?: EndingState;
 }
@@ -256,6 +255,12 @@ export interface Checkpoint {
   createdAtEventId?: string;
   worldStateSnapshot: WorldState;
   npcMemoryStoreSnapshot: NPCMemoryStore;
+}
+
+export interface GameRuntimeState {
+  world: WorldState;
+  npcMemories: NPCMemoryStore;
+  checkpoints: Checkpoint[];
 }
 
 // LLM or mock kernels may only return proposals. They never directly mutate

@@ -289,7 +289,6 @@ export const worldStateSchema: z.ZodType<import("./types").WorldState> = z.lazy(
     npcs: z.record(npcIdSchema, npcStateSchema),
     knowledge: z.record(z.string(), knowledgeItemSchema),
     eventLog: z.array(gameEventSchema),
-    checkpoints: z.array(checkpointSchema),
     flags: z.record(z.string(), flagValueSchema),
     ending: endingStateSchema.optional()
   })
@@ -302,6 +301,14 @@ export const checkpointSchema: z.ZodType<import("./types").Checkpoint> = z.lazy(
     createdAtEventId: z.string().optional(),
     worldStateSnapshot: worldStateSchema,
     npcMemoryStoreSnapshot: npcMemoryStoreSchema
+  })
+);
+
+export const gameRuntimeStateSchema: z.ZodType<import("./types").GameRuntimeState> = z.lazy(() =>
+  z.object({
+    world: worldStateSchema,
+    npcMemories: npcMemoryStoreSchema,
+    checkpoints: z.array(checkpointSchema)
   })
 );
 
@@ -339,3 +346,4 @@ export type ValidatorResult = z.infer<typeof validatorResultSchema>;
 export type Checkpoint = z.infer<typeof checkpointSchema>;
 export type EndingState = z.infer<typeof endingStateSchema>;
 export type WorldState = z.infer<typeof worldStateSchema>;
+export type GameRuntimeState = z.infer<typeof gameRuntimeStateSchema>;
