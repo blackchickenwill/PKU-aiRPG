@@ -54,6 +54,39 @@ function makeRejection(
   });
 }
 
+function makeConverted(
+  proposal: ActionProposal,
+  runtime: GameRuntimeState,
+  reason: string,
+  summary: string,
+  formalHint = "你的话意尚不明确，旁人一时不知如何接续。"
+): ValidatorResult {
+  return validatorResultSchema.parse({
+    status: "converted",
+    reason,
+    generatedEvents: [
+      createEvent(
+        `converted-${proposal.intent}-${runtime.world.eventLog.length + 1}`,
+        "dialogue",
+        summary,
+        {
+          actor: "player",
+          location: runtime.world.currentLocation,
+          payload: {
+            intent: proposal.intent,
+            rawInput: proposal.rawInput,
+            converted: true,
+            noEffect: true
+          },
+          important: false
+        }
+      )
+    ],
+    formalHint,
+    debugHints: [reason]
+  });
+}
+
 function currentLocationHasNpc(
   runtime: GameRuntimeState,
   npcId: NPCId,
@@ -93,6 +126,17 @@ function buildAcceptedDialogueEvent(
       }
     }
   );
+}
+
+function resolveOpeningListener(runtime: GameRuntimeState): NPCId | undefined {
+  if (
+    runtime.world.currentLocation === "zhu_home" &&
+    currentLocationHasNpc(runtime, "yi_zhihu", "zhu_home")
+  ) {
+    return "yi_zhihu";
+  }
+
+  return undefined;
 }
 
 function validateMeetingRequest(
@@ -176,6 +220,15 @@ export function validateActionProposal(
   runtime: GameRuntimeState,
   proposal: ActionProposal
 ): ValidatorResult {
+  if (proposal.safety === "ambiguous_in_world_action") {
+    return makeConverted(
+      proposal,
+      runtime,
+      "输入含义暂不明确，未形成可执行行动。",
+      "烛之武低声含混了一句，旁人一时难以接话。"
+    );
+  }
+
   if (proposal.safety !== "safe_in_world_action") {
     return makeRejection(
       proposal,
@@ -233,6 +286,48 @@ export function validateActionProposal(
     return validateMeetingRequest(runtime, proposal);
   }
 
+  if (
+    ["refuse_mission", "delay_commitment", "conditional_acceptance"].includes(
+      proposal.intent
+    )
+  ) {
+    const directTargetPresent =
+      proposal.targetNPC !== undefined &&
+      currentLocationHasNpc(
+        runtime,
+        proposal.targetNPC,
+        runtime.world.currentLocation
+      );
+    const openingListener = resolveOpeningListener(runtime);
+
+    if (directTargetPresent || openingListener) {
+      return validatorResultSchema.parse({
+        status: "accepted",
+        reason: "该表态已被在场人物听见，属于有效对话。",
+        generatedEvents: [
+          buildAcceptedDialogueEvent(
+            {
+              ...proposal,
+              targetNPC: directTargetPresent
+                ? proposal.targetNPC
+                : openingListener
+            },
+            runtime
+          )
+        ],
+        debugHints: ["listener present for opening stance"]
+      });
+    }
+
+    return makeConverted(
+      proposal,
+      runtime,
+      "当前没有明确听者，这更像是一段自言或未被接住的表态。",
+      "烛之武低声表明心意，却无人立即应答。",
+      "你的话尚未落到明确听者耳中，眼前暂时无人接续。"
+    );
+  }
+
   if (requiresDirectPresence(proposal.intent)) {
     if (!proposal.targetNPC) {
       return makeRejection(
@@ -278,10 +373,7 @@ export function validateActionProposal(
       "investigate",
       "defend",
       "give_item_or_info",
-      "wait",
-      "refuse_mission",
-      "delay_commitment",
-      "conditional_acceptance"
+      "wait"
     ].includes(proposal.intent)
   ) {
     return validatorResultSchema.parse({

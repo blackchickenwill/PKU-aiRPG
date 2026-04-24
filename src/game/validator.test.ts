@@ -85,3 +85,47 @@ test("unsafe input is rejected before world mutation", () => {
   assert.equal(result.status, "rejected");
   assert.match(result.reason, /安全分类/u);
 });
+
+test("ambiguous input is converted instead of dangerous rejection", () => {
+  const runtime = cloneRuntime(initialGameRuntimeState);
+  const proposal = parsePlayerActionMock({
+    rawInput: "嗯……",
+    currentLocation: runtime.world.currentLocation,
+    timestamp: 0
+  });
+
+  const result = validateActionProposal(runtime, proposal);
+
+  assert.equal(result.status, "converted");
+  assert.match(result.formalHint ?? "", /不明确|接续/u);
+  assert.equal(result.generatedEvents[0].payload.noEffect, true);
+});
+
+test("opening refusal at zhu home is accepted as dialogue to yi zhihu", () => {
+  const runtime = cloneRuntime(initialGameRuntimeState);
+  const proposal = parsePlayerActionMock({
+    rawInput: "我老矣，无能为也已。",
+    currentLocation: runtime.world.currentLocation,
+    timestamp: 0
+  });
+
+  const result = validateActionProposal(runtime, proposal);
+
+  assert.equal(result.status, "accepted");
+  assert.equal(result.generatedEvents[0].target, "yi_zhihu");
+});
+
+test("same refusal at market does not become strong refusal-to-listener event", () => {
+  const runtime = setLocation(cloneRuntime(initialGameRuntimeState), "market");
+  const proposal = parsePlayerActionMock({
+    rawInput: "我老矣，无能为也已。",
+    currentLocation: runtime.world.currentLocation,
+    timestamp: 0
+  });
+
+  const result = validateActionProposal(runtime, proposal);
+
+  assert.equal(result.status, "converted");
+  assert.equal(result.generatedEvents[0].target, undefined);
+  assert.equal(result.generatedEvents[0].payload.noEffect, true);
+});
