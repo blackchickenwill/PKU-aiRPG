@@ -16,13 +16,14 @@ const NPC_NAME_TO_ID: Array<[RegExp, NPCId]> = [
   [/(守卫|传令官)/u, "guard"]
 ];
 
+// More specific locations must be matched before broader scene names.
 const LOCATION_NAME_TO_ID: Array<[RegExp, LocationId]> = [
   [/(烛之武宅|回宅|归宅)/u, "zhu_home"],
   [/(郑伯宫室|宫中|宫室)/u, "zheng_palace"],
   [/(市井|街市)/u, "market"],
   [/(城门|城墙)/u, "city_gate"],
-  [/(秦营外|秦营)/u, "qin_camp_exterior"],
   [/(秦伯主帐|主帐)/u, "qin_main_tent"],
+  [/(秦营外|秦营)/u, "qin_camp_exterior"],
   [/(晋军营方向|晋营方向|晋营)/u, "jin_camp_direction"]
 ];
 
@@ -144,7 +145,7 @@ function detectIntent(input: string): ActionIntent {
     return "wait";
   }
 
-  if (/(前往|动身去|出城去|去往|去秦营|去主帐|去城门|去宫中|去市井)/u.test(input)) {
+  if (/(前往|动身去|出城去|去往|去秦营|去主帐|去城门|去宫中|去市井|进秦营|进入)/u.test(input)) {
     return "move";
   }
 
@@ -160,7 +161,7 @@ function detectIntent(input: string): ActionIntent {
     return "request_meeting";
   }
 
-  return "negotiate";
+  return "speak";
 }
 
 function detectTone(input: string): string {
