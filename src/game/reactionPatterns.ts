@@ -1,4 +1,6 @@
-import type { NPCKernelInput, ObservableEvent, NPCState, NPCMemory } from "./types";
+import { getAvailableAffordances } from "./npcAffordances";
+import type { NPCAffordance } from "./npcAffordances";
+import type { NPCKernelInput, ObservableEvent } from "./types";
 
 export type ReactionPattern =
   | "refusal"
@@ -8,15 +10,6 @@ export type ReactionPattern =
   | "ambiguous_speech"
   | "probing"
   | "none";
-
-export type ReactionAffordance =
-  | "acknowledge_grievance"
-  | "persuade_again"
-  | "report"
-  | "request_meeting"
-  | "question"
-  | "observe_silently"
-  | "do_nothing";
 
 type ReactionObservationInput =
   | Pick<NPCKernelInput, "observableEvent">
@@ -44,25 +37,6 @@ function collectObservationText(observableEvent: ObservableEvent): string {
 
 function hasAny(text: string, patterns: string[]): boolean {
   return patterns.some((pattern) => text.includes(pattern));
-}
-
-function isLowAuthorityMediator(npcState: NPCState): boolean {
-  return (
-    !npcState.possibleActions.some((action) => action.includes("命")) &&
-    !npcState.identity.includes("国君")
-  );
-}
-
-function feelsTimePressure(npcMemory: NPCMemory, observableEvent: ObservableEvent): boolean {
-  return (
-    npcMemory.episodicMemory.some(
-      (entry) => entry.includes("局势危急") || entry.includes("围郑")
-    ) ||
-    observableEvent.summaryForNpc.includes("心意") ||
-    observableEvent.knownDetails.some(
-      (detail) => detail.includes("国危") || detail.includes("郑国不可亡")
-    )
-  );
 }
 
 export function detectReactionPatternFromObservation(
@@ -108,34 +82,15 @@ export function detectReactionPatternFromObservation(
 
 export function suggestNpcAffordanceFromPattern(
   input: AffordanceInput
-): ReactionAffordance[] {
+): NPCAffordance[] {
   const pattern = input.pattern ?? detectReactionPatternFromObservation(input);
-  const lowAuthorityMediator = isLowAuthorityMediator(input.npcState);
-  const timePressure = feelsTimePressure(input.npcMemory, input.observableEvent);
 
-  switch (pattern) {
-    case "refusal":
-      return timePressure
-        ? ["persuade_again", "question", "observe_silently"]
-        : ["question", "observe_silently", "do_nothing"];
-    case "grievance":
-      return lowAuthorityMediator
-        ? ["acknowledge_grievance", "request_meeting", "report"]
-        : ["acknowledge_grievance", "question", "observe_silently"];
-    case "conditional_acceptance":
-      return lowAuthorityMediator
-        ? ["request_meeting", "report", "question"]
-        : ["question", "observe_silently", "do_nothing"];
-    case "loyalty_conflict":
-      return lowAuthorityMediator
-        ? ["persuade_again", "request_meeting", "acknowledge_grievance"]
-        : ["acknowledge_grievance", "question", "observe_silently"];
-    case "ambiguous_speech":
-      return ["question", "observe_silently", "do_nothing"];
-    case "probing":
-      return ["question", "observe_silently", "do_nothing"];
-    case "none":
-    default:
-      return ["do_nothing", "observe_silently"];
-  }
+  return getAvailableAffordances({
+    npcState: input.npcState,
+    npcMemory: input.npcMemory,
+    currentLocation: input.npcState.location,
+    observableEvent: input.observableEvent,
+    reactionPattern: pattern,
+    pressureHints: []
+  });
 }

@@ -1,8 +1,6 @@
 import { npcKernelOutputSchema } from "../schemas";
-import {
-  detectReactionPatternFromObservation,
-  suggestNpcAffordanceFromPattern
-} from "../reactionPatterns";
+import { getAvailableAffordances } from "../npcAffordances";
+import { detectReactionPatternFromObservation } from "../reactionPatterns";
 import type {
   NPCKernelInput,
   NPCKernelOutput,
@@ -27,11 +25,13 @@ function buildIntention(
 
 export function runYiZhihuKernelMock(input: NPCKernelInput): NPCKernelOutput {
   const pattern = detectReactionPatternFromObservation(input);
-  const affordances = suggestNpcAffordanceFromPattern({
+  const affordances = getAvailableAffordances({
     npcState: input.npcState,
     npcMemory: input.npcMemory,
+    currentLocation: input.npcState.location,
     observableEvent: input.observableEvent,
-    pattern
+    reactionPattern: pattern,
+    pressureHints: ["zheng_crisis", "time_urgent"]
   });
   const primaryAffordance = affordances[0] ?? "do_nothing";
 

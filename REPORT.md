@@ -494,6 +494,91 @@ kernel 响应依赖的是通用模式识别与 affordance 建议，
 - 未实现 WorldDirector。
 - 未实现 NPC Proposal Validator。
 
+### 2026-04-24 Task 08.2 NPC Affordance Model
+
+本次改动：
+
+- 新增 `src/game/npcAffordances.ts`。
+- 实现：
+  - `NPCAffordance`
+  - `AffordanceContext`
+  - `getAvailableAffordances(context)`
+- affordance 模型当前综合考虑：
+  - NPC identity
+  - NPC role / authority
+  - current location
+  - observable event
+  - reaction pattern
+  - private memory
+  - current pressure hints
+- 当前支持的通用 affordance 包括：
+  - `acknowledge_grievance`
+  - `persuade_again`
+  - `report`
+  - `request_meeting`
+  - `question`
+  - `warn`
+  - `delay`
+  - `block`
+  - `admit_conditionally`
+  - `negotiate`
+  - `defer_decision`
+  - `withdraw_conditionally`
+  - `detain`
+  - `pressure_qin`
+  - `apologize_or_acknowledge_late_use`
+  - `authorize_mission`
+  - `urge`
+  - `wait_for_report`
+  - `observe_silently`
+  - `do_nothing`
+- `reactionPatterns.ts` 中的 affordance 建议已改为兼容包装，统一走 `getAvailableAffordances(context)`。
+- `yiZhihuMock` 已更新为使用新的 affordance helper。
+
+设计说明：
+
+```text
+affordance 是“当前这个 NPC 合理可能提出什么动作”的一般可能性集合，
+不是剧情分支表。
+它不直接决定剧情结果，也不把例子写成硬编码 outcomes。
+```
+
+本次新增验证：
+
+- Yi Zhi Hu grievance context 包含：
+  - `acknowledge_grievance`
+  - `report`
+  - `request_meeting`
+- Guard audience request context 包含：
+  - `report`
+  - `block`
+  - `delay`
+  - 不包含 `withdraw_conditionally`
+- Qin Duke interest-analysis context 包含：
+  - `question`
+  - `negotiate`
+  - `defer_decision`
+  - 不包含直接提交式撤军动作
+- Jin Envoy partial suspicion context 包含：
+  - `warn`
+  - `request_meeting`
+  - `pressure_qin`
+  - 不包含依赖隐藏主帐内容的行动
+- Zheng Duke 在无 report 情况下不能对秦营主帐事件作出实质反应
+- 既有 tests 继续通过
+
+验证结果：
+
+- `npm run test` 通过，81 个测试全部通过。
+- `npm run build` 通过。
+
+未包含内容：
+
+- affordances 仍然只是 general action possibilities，不是 story branches。
+- 未实现 WorldDirector。
+- 未实现 NPC Proposal Validator。
+- 未接入任何 LLM / API key / 模型提供方。
+
 ### 2026-04-24 Roadmap Correction Only
 
 本次改动：
