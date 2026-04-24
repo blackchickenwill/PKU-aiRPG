@@ -805,3 +805,53 @@ NPC Proposal Validator 说明：
 - 未实现 UI。
 - 未实现 Task 11 full mock game loop。
 - 未让 WorldDirector 直接修改 `WorldState` 或 `NPCMemory`。
+### 2026-04-24 Task 11 Full Mock Game Loop
+
+本次改动：
+- 新增 `src/game/gameLoop.ts`。
+- 新增 `src/game/gameLoop.test.ts`。
+- 实现 `runPlayerTurn(runtime, rawInput)`，把单轮玩家输入串过 mock 管线：
+  - `parserMock`
+  - safety / `validateActionProposal`
+  - `reduceValidatedResult`
+  - `observationFilter`
+  - `runNpcKernelMock`
+  - `validateNpcMemoryPatchProposal`
+  - `validateNpcIntentionProposal`
+  - `applyMemoryPatchProposal`
+  - `runWorldDirector`
+  - mock narrative / debug 汇总
+- `GameTurnResult` 会返回下一步 runtime、玩家 action、action proposal、validator 结果、已落盘玩家事件、ObservableEvents、NPC kernel 输出、memory patch 结果、NPC proposal 校验结果、Director 输出、mock narrative lines 与 debug summary。
+- 在秦伯主帐内为未显式点名但属于直接外交发言的玩家输入补足当前场景默认听者 `qin_duke`，使“秦远晋近”类论证可以通过既有 parser/validator/observation 机制进入秦伯视角，而不是新增剧情分支。
+
+设计说明：
+- 这是完整 mock loop 的 orchestration 层，不替代已有 parser、validator、reducer、NPC kernels、proposal validator 或 WorldDirector。
+- `WorldState` 只通过 `reduceValidatedResult` 等 reducer 路径变化。
+- `NPCMemory` 只通过 `applyMemoryPatchProposal` 变化，且先经过可见 `ObservableEvent` 与 proposal validator 校验。
+- WorldDirector 仍然只是 scheduler，只输出 proposal / schedule，不直接落盘 scheduled events。
+- 示例输入只作为回归测试，不是 hardcoded story branch。
+
+本次新增验证：
+- Opening refusal：玩家事件在 `zhu_home` 落盘，佚之狐可见并更新自身 memory，郑伯 memory 不被直接更新。
+- Grievance：佚之狐识别怨气，memory patch 落到佚之狐，面向郑伯的 intention 被校验，WorldDirector 只调度 follow-up proposal。
+- Qin tent argument：秦伯获得 full observation 并更新 memory；晋使只获得 partial cue，不泄漏主帐具体内容。
+- Unsafe input：拒绝且不改变 `WorldState` / `NPCMemory`，不唤醒 NPC kernel。
+- Ambiguous input：转换为 no-effect event，不产生重大状态变化。
+- 额外验证：
+  - `runPlayerTurn` 不直接 mutate 输入 runtime。
+  - eventLog 只在 accepted / converted 玩家事件经 reducer 后增长。
+  - NPCMemory 只经 validated visible ObservableEvent 更新。
+  - Director scheduled events 全部保持 proposal-only。
+
+验证结果：
+- `npm run test` 通过：114 个测试全部通过。
+- `npm run build` 通过。
+- build 过程中 Next.js 仍提示 workspace root lockfile warning；该 warning 与本次 Task 11 改动无关。
+
+未包含内容：
+- 未接入任何 LLM / API key / 模型提供方。
+- 未实现 UI。
+- 未实现 checkpoint。
+- 未实现 ending composer。
+- 未让 WorldDirector 替代 NPC kernels。
+- 未让 WorldDirector 直接修改 `WorldState` 或 `NPCMemory`。
