@@ -855,3 +855,50 @@ NPC Proposal Validator 说明：
 - 未实现 ending composer。
 - 未让 WorldDirector 替代 NPC kernels。
 - 未让 WorldDirector 直接修改 `WorldState` 或 `NPCMemory`。
+### 2026-04-24 Task 11.5 Minimal Playable UI Binding
+
+本次改动：
+- 更新 `src/app/page.tsx`，将 Next.js 首页从 Task 01 占位 UI 改为最小可玩界面。
+- 更新 `src/app/globals.css`，提供简洁的地图、场景、输入栏和紧凑 debug 布局。
+- UI 当前直接使用：
+  - `initialGameRuntimeState`
+  - `runPlayerTurn(runtime, rawInput)`
+- React state 暂存当前 `runtime`、历史 turn result 和输入框内容。
+
+界面行为：
+- 左侧显示地点节点图。
+- 当前地点高亮。
+- 与当前地点相连的地点可点击。
+- 点击相连地点会生成类似“我前往郑伯宫室。”的移动输入，并走同一个 `runPlayerTurn` 管线。
+- 右侧显示：
+  - 当前地点名称与描述
+  - 在场 NPC
+  - 最新 narrative / formal messages
+  - 最近 event log summary
+- 底部输入框支持提交按钮与 Enter 提交。
+- 紧凑 debug mini-view 显示：
+  - validator status
+  - committedEvents count
+  - observableEvents count
+  - npcOutputs count
+  - memoryPatches count
+  - directorScheduled count
+
+设计说明：
+- UI 不直接修改 `WorldState`。
+- 移动不直接改 `currentLocation`，而是转成玩家输入后通过 `runPlayerTurn`、validator 和 reducer 生效。
+- unsafe input 会显示由 game loop 返回的拒绝/无效反馈，且 runtime 不会被 mutation。
+- 该 UI 只展示紧凑 debug 摘要，不展示完整 NPC 私有记忆，不展示隐藏推理链。
+
+验证结果：
+- `npm run test` 通过：114 个测试全部通过。
+- `npm run build` 通过。
+- build 过程中 Next.js 仍提示 workspace root lockfile warning；该 warning 与本次 Task 11.5 改动无关。
+
+未包含内容：
+- 未接入任何 LLM / API key / OpenRouter / OpenAI。
+- 未新增数据库或持久化。
+- 未实现完整 Debug / Director Panel。
+- 未实现 checkpoint。
+- 未实现 ending composer。
+- 未新增故事分支或 UI hardcoded branch。
